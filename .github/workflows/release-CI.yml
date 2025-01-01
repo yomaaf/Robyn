@@ -142,7 +142,12 @@ jobs:
             add-apt-repository ppa:deadsnakes/ppa
             apt update -y
             PYTHON=python${{ matrix.python.version }}
-            apt install -y $PYTHON $PYTHON-distutils $PYTHON-venv
+            # Install Python and handle Python 3.12 differently since distutils is included in stdlib
+            if [ "${{ matrix.python.version }}" = "3.12" ]; then
+              apt install -y $PYTHON python-setuptools
+            else
+              apt install -y $PYTHON $PYTHON-distutils python-setuptools
+            fi
           run: |
             ls -lrth /artifacts
             PYTHON=python${{ matrix.python.version }}
